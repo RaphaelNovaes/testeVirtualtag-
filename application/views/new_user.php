@@ -1,0 +1,35 @@
+<?php
+	defined('BASEPATH') OR exit('No direct script access allowed');
+	include_once APPPATH.'views/header.php';
+?>
+
+<div class="panel panel-default panel-login-geral">
+  <div class="panel-heading">
+    <h3 class="panel-title panel-title-geral">New User</h3>
+  </div>
+  <div class="panel-body" >
+  		<form id='form_new_user' action="#">
+  			<div class="form-group">
+		    	<input type="text" name='nome' class="form-control" placeholder="Name">
+		   	</div>
+	  		<div class="form-group">
+		    	<input type="text" name='login' class="form-control" placeholder="Login">
+		   	</div>
+		   	<div class="form-group">
+		    	<input type="password" name='pass' class="form-control" placeholder="Pass">
+		   	</div>
+
+		   	<div class="form-group">
+		    	<input type="text" name='email' class="form-control" placeholder="Email">
+		   	</div>
+
+		   	<div class="btn-group btn-group-geral">
+		    	<div id='btn-create' class="btn btn-default">Create</div>
+		   	</div>
+		   	<div class="btn-group btn-group-geral-right">
+		    	<a href="Login"><span class='glyphicon glyphicon-arrow-left'></span>Return</a>
+		    </div>
+	   	</form>
+  </div>
+</div>
+<div class="pn-error panel-login-geral"></div>
