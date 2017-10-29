@@ -84,13 +84,23 @@ class Welcome extends CI_Controller {
 		$this->form_validation->set_rules('email', 'Email', 'required|valid_email');
 
 		$this->form_validation->set_message('required', 'Field %s is riquired.');
+		$this->form_validation->set_message('cb_valid_login', 'Username alredy in use.');
 
 		$this->form_validation->set_error_delimiters('<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>', '</div>');
 
 		if ($this->form_validation->run() == FALSE) {
 			echo json_encode(array('status' => 0, 'msg' => validation_errors()));
 		} else {
-			echo json_encode(array('status' => 1, 'msg' => '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Create successful</div>'));
+			$this->load->model('usuarios');
+			$user = $this->usuarios->insert_user();
+			if ($user) {
+				$msg   = 'Create successful';
+				$alert = 'success';
+			} else {
+				$msg   = 'Unexpected error, please try again.';
+				$alert = 'success';
+			}
+			echo json_encode(array('status' => 1, 'msg' => '<div class="alert alert-'.$alert.'"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'.$msg.'</div>'));
 		}
 	}
 
@@ -100,15 +110,9 @@ class Welcome extends CI_Controller {
 			$user_id = $this->usuarios->valid_login($user);
 
 			if (!$user_id) {
-				$user = $this->usuarios->insert_user();
-				if ($user) {
-					return true;
-				} else {
-					$this->form_validation->set_message('cb_valid_login', 'Unexpected error, please try again.');
-					return false;
-				}
+				return true;
 			} else {
-				$this->form_validation->set_message('cb_valid_login', 'Username alredy in use.');
+
 				return false;
 			}
 		}

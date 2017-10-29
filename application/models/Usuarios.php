@@ -34,7 +34,7 @@ class Usuarios extends CI_Model {
     	$row = $query->row_array();
 
     	if($row){
-    		return true;
+    		return $row;
     	}else
     		return false;
     }

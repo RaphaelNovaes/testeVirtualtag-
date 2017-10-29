@@ -183,6 +183,12 @@ class Dashboard extends CI_Controller {
 		echo json_encode($data);
 	}
 
+	public function get_last_product(){
+		$this->load->model('products');
+		$data = $this->products->get_last_product();
+		echo json_encode($data);
+	}
+
 	public function put_product(){
 		$this->load->model('products');
 		$this->products->put_product();

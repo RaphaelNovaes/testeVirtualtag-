@@ -25,6 +25,18 @@ class Products extends CI_Model {
             return false;
     }
 
+    public function get_last_product(){
+        $this->db->select('max(id_product) as last_id');
+        $query = $this->db->get('products');
+
+        $data = $query->row_array();
+
+        if($data){
+            return $data;
+        }else
+            return false;
+    }
+
     public function put_product(){
         $data = array_values($this->input->post());
         $set = array(

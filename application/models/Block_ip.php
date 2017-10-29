@@ -8,7 +8,7 @@ class Block_ip extends CI_Model {
     }
 
     public function insert_ip($ip){
-    	$dt = date("Y-m-d H:i:s", time()+120);
+    	$dt = date("Y-m-d H:i:s", time()+1200);
     	$this->db->insert('block_ip', array('ip' => $ip, 'dt_allow' => $dt, 'attemps' => 1));
     	$insert_id = $this->db->insert_id();
 
@@ -31,7 +31,7 @@ class Block_ip extends CI_Model {
     }
 
     public function update_ip($ip){
-    	$dt = date("Y-m-d H:i:s", time()+120);
+    	$dt = date("Y-m-d H:i:s", time()+1200);
     	$this->db->set('attemps', 'attemps+1', false);
     	$this->db->set('dt_allow', "$dt", true);
     	$this->db->where('ip', "$ip");

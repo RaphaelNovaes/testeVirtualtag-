@@ -60,6 +60,7 @@ $route['ChangePass']		= 'dashboard/change_pass';
 $route['NewUser']			= 'welcome/new_user';
 //$route['ReadCvs']			= 'dashboard/read_cvs';
 $route['GetProducts']		= 'dashboard/get_products';
+$route['GetLastProduct']	= 'dashboard/get_last_product';
 $route['PutProduct']		= 'dashboard/put_product';
 $route['DelProduct']		= 'dashboard/del_product';
 $route['PostProduct']		= 'dashboard/post_product';

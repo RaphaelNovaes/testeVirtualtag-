@@ -57,18 +57,22 @@ mainApp.controller('mainController', function($scope){
 	    } );
 
 	    $('#btn-add').click( function () {
-	    	rowNode = table.row.add( {
-	    		"id_product": (table.page.info().recordsTotal + 2),
-		        "name":"Default",
-		        "pack":"Default",
-		        "soldby":"Default",
-		        "subcategory":"Default",
-		        "category":"Default"
-		    } ).draw().node();
+	    	$.post('GetLastProduct', {}, function(data){ 
 
-		    $( rowNode ).css( 'color', 'red' ).animate( { color: 'black' } );
-		    table.page('last').draw('page');
-		    $.post('PostProduct', table.row($(rowNode)).data());
+	    		rowNode = table.row.add( {
+		    		"id_product": (parseInt(data.last_id) + 1),
+			        "name":"Default",
+			        "pack":"Default",
+			        "soldby":"Default",
+			        "subcategory":"Default",
+			        "category":"Default"
+			    } ).draw().node();
+
+			    $( rowNode ).css( 'color', 'red' ).animate( { color: 'black' } );
+			    table.page('last').draw('page');
+			    $.post('PostProduct', table.row($(rowNode)).data());
+
+	    	},'json');
 	    } );
 	}
 
