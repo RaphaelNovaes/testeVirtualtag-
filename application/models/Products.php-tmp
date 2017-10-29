@@ -15,7 +15,7 @@ class Products extends CI_Model {
 		$query = $this->db->get('products');
 
 		foreach ($query->result_array() as $row) {
-			$data[] = array_values($row);
+			$data[] = $row;
 		}
 
 		if ($data) {
@@ -42,6 +42,19 @@ class Products extends CI_Model {
 
 	public function del_product() {
 		$this->db->delete('products', array('id_product' => $this->input->post('id')));
+	}
+
+	public function post_product() {
+		$data = array_values($this->input->post());
+		$new  = array(
+			'name'        => $data[1],
+			'pack'        => $data[2],
+			'soldby'      => $data[3],
+			'subcategory' => $data[4],
+			'category'    => $data[5]
+		);
+
+		$this->db->insert('products', $new);
 	}
 }
 

@@ -1,55 +1,39 @@
 mainApp.controller('mainController', function($scope){
 	$scope.showResponse = function(data){
 		$scope.imgSrc = $scope.imgSrc;
-		$scope.errorMsg = $.parseJSON(data).msg;
+		$scope.errorMsg = data.data.data;
 	}
 
 	$scope.submitPass = function(){
 		$.post('ChangePass', {pass_old: $scope.pass_old, new_pass: $scope.new_pass}, function(data) {
-			$scope.errorMsg = $.parseJSON(data).msg;
+			$scope.$apply(function() {
+				$scope.errorMsg = $.parseJSON(data).msg;
+			});
 		});
 	}
 
 	$scope.iniDatatable = function(){
 		table = $('#products').DataTable({
-        	"ajax": 'GetProducts'
+        	"ajax": 'GetProducts',
+        	"columns": [
+		        { data: "id_product" },
+		        { data: "name","defaultContent": "default" },
+		        { data: "pack","defaultContent": "default" },
+		        { data: "soldby","defaultContent": "default" },
+		        { data: "subcategory","defaultContent": "default" },
+		        { data: "category","defaultContent": "default" }
+		    ]
     	})
 
     	table.MakeCellsEditable({
 	        "onUpdate": myCallbackFunction,
 	        "inputCss":'my-input-class',
 	        "columns": [1,2,3,4,5],
-	        "confirmationButton": { // could also be true
+	        "allowNulls":{},
+	        "confirmationButton": {
 	            "confirmCss": 'my-confirm-class',
 	            "cancelCss": 'my-cancel-class'
-	        },
-	        "inputTypes": [
-	            {
-	                "column": 0,
-	                "type": "text",
-	                "options": null
-	            },
-	            {
-	                "column": 0,
-	                "type": "text",
-	                "options": null
-	            },
-	            {
-	                "column": 0,
-	                "type": "text",
-	                "options": null
-	            },
-	            {
-	                "column": 0,
-	                "type": "text",
-	                "options": null
-	            },
-	            {
-	                "column": 0,
-	                "type": "text",
-	                "options": null
-	            },
-	        ]
+	        }
 	    });
 
 	    $('#products tbody').on( 'click', 'tr', function () {
@@ -71,10 +55,51 @@ mainApp.controller('mainController', function($scope){
 	        }
 
 	    } );
+
+	    $('#btn-add').click( function () {
+	    	rowNode = table.row.add( {
+	    		"id_product": (table.page.info().recordsTotal + 2),
+		        "name":"Default",
+		        "pack":"Default",
+		        "soldby":"Default",
+		        "subcategory":"Default",
+		        "category":"Default"
+		    } ).draw().node();
+
+		    $( rowNode ).css( 'color', 'red' ).animate( { color: 'black' } );
+		    table.page('last').draw('page');
+		    $.post('PostProduct', table.row($(rowNode)).data());
+	    } );
 	}
 
 	function myCallbackFunction (updatedCell, updatedRow, oldValue) {
-	    var obj = updatedRow.data().reduce(function(key, val) { key[val] = val; return key; }, {});
-	    $.post('PutProduct', obj);
+		var num = 1;
+	    $.post('PutProduct', updatedRow.data());
+	}
+
+	$scope.sendDef = function(){
+		word = $('#word').val();
+		def = $('#def').val();
+
+		if(def == 'everything')
+			def = '';
+		else
+			def = '/'+def;
+
+		$.post(
+			'https://wordsapiv1.p.mashape.com/words/'+word+def, 
+			{'X-Mashape-Key':'Your Key', 'Accept': 'application/json'}, 
+			function(data){
+				$scope.$apply(function() {
+					$scope.defWord = '';
+				});
+			},
+			'json'
+		).fail(function(data) {
+	    	$scope.$apply(function() {
+				$scope.defWord = '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>' + $.parseJSON(data.responseText).message + '</div>';
+			});
+		})
+		;
 	}
 });

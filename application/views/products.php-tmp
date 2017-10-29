@@ -1,6 +1,7 @@
 <?php
 defined('BASEPATH') OR exit('No direct script access allowed');
 ?>
+<button id='btn-add' class="btn btn btn-default">Add row</button>
 <button id='btn-delete' class="btn btn btn-default">Delete selected row</button>
 <table id="products" class="display" cellspacing="0" width="100%" ng-init="iniDatatable()">
     <thead>

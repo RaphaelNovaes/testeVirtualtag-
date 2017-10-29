@@ -7,7 +7,7 @@
   	</div>
 	<div class="panel-body">
 		<div class="btn-group btn-group-geral">
-			<div class="btn btn-default btn-upload"  upload-button url="ValidImg" on-success="showResponse(response)">Upload</div>
+			<upload-button class="btn btn-default btn-upload" url="ValidImg" on-complete="showResponse(response)">Upload</upload-button>
 		</div>
 	</div>
 </div>

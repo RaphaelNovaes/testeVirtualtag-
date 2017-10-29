@@ -27,7 +27,6 @@ class Usuarios extends CI_Model {
     }
 
     public function valid_user($user, $pass){
-        $this->db->select('email');
     	$this->db->where('login', $user);
     	$this->db->where('pass', $pass);
     	$query = $this->db->get('users');
@@ -35,7 +34,7 @@ class Usuarios extends CI_Model {
     	$row = $query->row_array();
 
     	if($row){
-    		return $row;
+    		return true;
     	}else
     		return false;
     }

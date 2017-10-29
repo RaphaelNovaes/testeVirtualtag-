@@ -62,6 +62,7 @@ $route['NewUser']    = 'welcome/new_user';
 $route['GetProducts'] = 'dashboard/get_products';
 $route['PutProduct']  = 'dashboard/put_product';
 $route['DelProduct']  = 'dashboard/del_product';
+$route['PostProduct'] = 'dashboard/post_product';
 
 $route['NewUserView']     = 'welcome/new_user_view';
 $route['ChangeImgView']   = 'dashboard/change_img_view';

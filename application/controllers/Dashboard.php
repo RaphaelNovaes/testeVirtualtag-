@@ -69,7 +69,7 @@ class Dashboard extends CI_Controller {
         {
             $data = array('upload_data' => $this->upload->data());
 
-            echo json_encode(array('status' => 1, 'data' => '<div class="alert alert-danger"><a href="#" class="close" data-dismiss="alert" aria-label="close">Change Sucessful.</a></div>'));
+            echo json_encode(array('status' => 1, 'data' => '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Change Sucessful.</div>'));
         }
 	}
 
@@ -86,7 +86,24 @@ class Dashboard extends CI_Controller {
 		{
 			echo json_encode(array('status' => 0, 'msg' => validation_errors()));
 		}else{
-			echo json_encode(array('status' => 1, 'msg' => '<div class="alert alert-success"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>Login successful</div>'));
+			$this->load->model('usuarios');
+			$user = $this->usuarios->get_user($this->session->userdata('id_user'));
+			$return =  $this->usuarios->change_pass($this->session->userdata('login'), $this->input->post('new_pass'));
+			if($return){
+				$response = $this->sendEmail($user['email']);
+				if($response){
+					$msg = 'Login successful';
+					$alert = 'success';
+				}else{
+					$msg = 'Your password has changed, but there was an error sending email.';
+					$alert = 'danger';
+				}
+			}else{
+				$msg = 'Unexpected error, please try again.';
+				$alert = 'danger';
+			}
+
+			echo json_encode(array('status' => 1, 'msg' => '<div class="alert alert-'.$alert.'"><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>'.$msg.'</div>'));
 		}
 	}
 
@@ -96,25 +113,13 @@ class Dashboard extends CI_Controller {
 			$user_id = $this->usuarios->valid_user($login, $pass);
 
 			if($user_id){
-				$return =  $this->usuarios->change_pass($login, $this->input->post('new_pass'));
-				if($return){
-					$response = $this->sendEmail($user_id['email']);
-					if($response){
-						return true;
-					}else{
-						$this->form_validation->set_message('cb_valid_pass', 'Error sending change email, please try again. ');
-						return false;
-					}
-					return true;
-				}else{
-					$this->form_validation->set_message('cb_valid_pass', 'Unexpected error, please try again. ');
-					return false;
-				}
+				return true;
 			}else{
 				$this->form_validation->set_message('cb_valid_pass', 'Pass invalid. ');
 				return false;
 			}
 		}
+		$this->form_validation->set_message('cb_valid_pass', 'Field %s is required. ');
 		return false;
 	}
 
@@ -141,7 +146,7 @@ class Dashboard extends CI_Controller {
 
 		$this->email->send();
 
-		echo json_encode($this->email->print_debugger());
+		$error = $this->email->print_debugger();
 	}
 
 	public function products_view(){
@@ -186,5 +191,10 @@ class Dashboard extends CI_Controller {
 	public function del_product(){
 		$this->load->model('products');
 		$this->products->del_product();
+	}
+
+	public function post_product(){
+		$this->load->model('products');
+		$this->products->post_product();
 	}
 }
